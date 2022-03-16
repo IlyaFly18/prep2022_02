@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "case3.h"
+#include "case4.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -7,6 +8,7 @@
 #define TST_FOO_FIX     1
 #define TST_FOO_IMPL    2
 #define TST_MOD_IMPL    3
+#define TST_CASE4_IMPL  4
 
 
 /* NOTE(stitaevskiy):
@@ -67,8 +69,14 @@ int main(int argc, const char** argv) {
             // a separate C-module (not in `main` or `utils` module)
             break;
         }
+        case TST_CASE4_IMPL: {
+            int num = custom_atoi(data);
+            from_1_to_n(num);
+            break;
+        }
         default: {
             return ERR_WRONG_FLG;
         }
     }
+    return 0;
 }
