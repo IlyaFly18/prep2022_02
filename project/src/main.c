@@ -1,77 +1,73 @@
+#include "is_prime.h"
+#include "output_from_1_to_n.h"
 #include "utils.h"
-#include "case3.h"
-#include "case4.h"
 
-#define ERR_ARGS_COUNT (-1)
-#define ERR_WRONG_FLG (-2)
-
-#define TST_FOO_FIX     1
-#define TST_FOO_IMPL    2
-#define TST_MOD_IMPL    3
-#define TST_CASE4_IMPL  4
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
-/* NOTE(stitaevskiy):
- * We use `atoi` function just for simplification and code reducing.
- * This function doesn't report conversation errors.
- * For safety program we recommend using `strtol` and its analogs.
- * (See `man atoi` and `man strtol` for more info).
- *
- * const char str_num[] = "1234";
- * char* end = NULL;
- * int val = (int) strtol(str_num, &end, 0);
- * if (end != '\0') {
- *     //ERROR
- * }
- *
- * */
+#define ERR_ARGS_COUNT   (-1)
+#define ERR_WRONG_FLG   (-2)
+#define ERR_PTR_VALUE   (-3)
 
-int custom_atoi(const char* str) {
-    char* end = NULL;
-    int res = (int) strtol(str, &end, 0);
-    if (*end != '\0')
-        return ERR_WRONG_FLG;
-    return res;
-}
+#define TST_FOO_FIX   1
+#define TST_FOO_IMPL   2
+#define TST_MOD_IMPL   3
+#define TST_NEW_CASE_AND_MOD_IMPL   4
 
-int main(int argc, const char** argv) {
+
+long int string_to_long_int(const char *str, long int* res);
+
+
+int main(int argc, const char **argv) {
     if (argc < 3) {
         return ERR_ARGS_COUNT;
     }
-    int Test_case = custom_atoi(argv[1]);
-    const char* data;
-    data = argv[2];
+
+    long int Test_case = 0;
+    long int returned_value = string_to_long_int(argv[1], &Test_case);
+    if (returned_value != 0) {
+        return ERR_WRONG_FLG;
+    }
+
+    const char *data = argv[2];
+
+    long int arg_2 = 0;  // первый аргумент для некоторого кейса Test_case
+    returned_value = string_to_long_int(data, &arg_2);
+    if (returned_value != 0) {
+        return ERR_WRONG_FLG;
+    }
 
     switch (Test_case) {
         case TST_FOO_FIX: {
-            int to = custom_atoi(data);
-            size_t ticks_count = timer_from(to);
-            printf("%zu\n", ticks_count);
+            printf("%zu\n", timer_from(arg_2));
             break;
         }
         case TST_FOO_IMPL: {
-            if (argc == 4) {
-                int base = custom_atoi(data);
-                int pow =  custom_atoi(argv[3]);
-                int res = custom_pow(base, pow);  // TODO(stitaevskiy): Implement me
-
-                printf("%d\n", res);
-            } else {
+            if (argc < 4) {
                 return ERR_ARGS_COUNT;
             }
+
+            long int base = arg_2;
+
+            long int pow = 0;
+            returned_value = string_to_long_int(argv[3], &pow);
+            if (returned_value != 0) {
+                return ERR_WRONG_FLG;
+            }
+
+            long int res = custom_pow(base, pow);
+            printf("%ld\n", res);
             break;
         }
         case TST_MOD_IMPL: {
-            int num = custom_atoi(data);
-            printf("%d", is_prime(num));
-            // TODO(stitaevskiy): Print to stdout `1` if `num` is prime number and `0` otherwise
-            // This function MUST be implemented in
-            // a separate C-module (not in `main` or `utils` module)
+            printf("%ld", is_prime(arg_2));
             break;
         }
-        case TST_CASE4_IMPL: {
-            int num = custom_atoi(data);
-            from_1_to_n(num);
+        case TST_NEW_CASE_AND_MOD_IMPL: {
+            output_from_1_to_n(arg_2);
+            printf("\n");
             break;
         }
         default: {
@@ -80,3 +76,17 @@ int main(int argc, const char** argv) {
     }
     return 0;
 }
+
+
+long int string_to_long_int(const char *str, long int* res) {
+    if (str == NULL) {
+        return ERR_PTR_VALUE;
+    }
+    char *end = NULL;
+    *res = (long int) strtol(str, &end, 0);
+    if (*end != '\0') {
+        return ERR_PTR_VALUE;
+    }
+    return 0;
+}
+
