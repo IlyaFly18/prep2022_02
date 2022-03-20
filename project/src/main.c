@@ -8,7 +8,8 @@
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
 #define ERR_PTR_VALUE (-3)
-#define ERR_WRONG_RETURNED_VAL_OF_FUNCTION (-4)
+#define ERR_NULL_ARG (-4)
+#define ERR_BAD_CONVERSION (-5)
 
 #define TST_UTILS_TIMER 1
 #define TST_UTILS_CUSTOM_POW 2
@@ -17,7 +18,7 @@
 
 static long int string_to_long_int(const char *str, long int *res) {
     if (str == NULL || res == NULL) {
-        return ERR_PTR_VALUE;
+        return ERR_NULL_ARG;
     }
 
     char *end = NULL;
@@ -43,7 +44,7 @@ int main(int argc, const char **argv) {
 
     long int arg_1_for_case = 0;
     if (string_to_long_int(data, &arg_1_for_case) != 0) {
-        return ERR_WRONG_RETURNED_VAL_OF_FUNCTION;
+        return ERR_BAD_CONVERSION;
     }
 
     switch (test_case) {
@@ -60,7 +61,7 @@ int main(int argc, const char **argv) {
 
             long int pow = 0;
             if (string_to_long_int(argv[3], &pow) != 0) {
-                return ERR_WRONG_RETURNED_VAL_OF_FUNCTION;
+                return ERR_BAD_CONVERSION;
             }
 
             long int res = custom_pow(base, pow);
