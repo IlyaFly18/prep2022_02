@@ -1,17 +1,27 @@
 #include "utils.h"
 
-size_t timer_from(unsigned char from) {
-    size_t counter;
-    for (unsigned char i = from; i >= 0; --i) {
-        ++counter;
-        printf(i);
+#include <stdio.h>
+
+size_t timer_from(long int from) {
+    for (long int i = from; i > 0; --i) {
+        printf("%ld ", i);
     }
-    return counter;
+    if (from > 0) {
+        printf("%d\n", 0);
+    }
+    return from < 0 ? 0 : from + 1;
 }
 
-// TODO: Implement `power of` function
-/*
-int custom_pow(int base, int power) {
-    return 0;
+long int custom_pow(long int base, long int power) {  // итеративный алгоритм быстрого возведения в степень
+    long int answer = 1;
+    while (power != 0) {
+        if (power % 2 == 0) {
+            base *= base;
+            power /= 2;
+        } else {
+            answer *= base;
+            --power;
+        }
+    }
+    return answer;
 }
-*/
