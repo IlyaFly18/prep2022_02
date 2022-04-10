@@ -6,15 +6,15 @@ HDRS_DIR = project/include
 
 SRCS = \
 		project/src/main.c \
-		project/src/operations.c \
-		project/src/person.c \
-        project/src/transfer.c \
+		project/src/utils.c \
+        project/src/read_and_print_data.c \
 
 TST_SRCS = \
 		project/src/test_main.c \
+		project/src/utils.c \
 		project/src/test_print_to_file.c \
-		project/src/person.c \
-        project/src/transfer.c \
+		project/src/read_and_print_data.c \
+
 
 .PHONY: all build rebuild check test memtest clean my_test
 

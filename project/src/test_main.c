@@ -1,17 +1,13 @@
 #include "test_print_to_file.h"
 
-enum return_code_of_bad_tests {
-    TEST_1 = 1,
-    TEST_2
-};
+#define WRONG_TESTS (-1)
 
 int main(void) {
-    if (test_print_person() != 0) {
-        return TEST_1;
+    if (test_print_person() != 0 ||
+        test_print_transaction() != 0 ||
+        test_update_clients() != 0) {
+        return WRONG_TESTS;
     }
-    if (test_print_transfer() != 0) {
-        return TEST_2;
-    }
+
     return 0;
 }
-
