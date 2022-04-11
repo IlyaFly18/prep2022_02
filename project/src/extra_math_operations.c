@@ -108,9 +108,24 @@ Matrix *adj(const Matrix *matrix) {
         return NULL;
     }
 
+    if (rows != cols) {
+        return NULL;
+    }
+
     Matrix *adj_matrix = create_matrix(rows, cols);
     if (adj_matrix == NULL) {
         return NULL;
+    }
+
+    if (rows == 1) {
+        double val_in_matrix;
+        if (get_elem(matrix, 0, 0, &val_in_matrix) != 0) {
+            return NULL;
+        }
+        if (set_elem(adj_matrix, 0, 0, val_in_matrix) != 0) {
+            return NULL;
+        }
+        return adj_matrix;
     }
 
     int flag = 0;
@@ -156,13 +171,16 @@ Matrix *inv(const Matrix *matrix) {
         return NULL;
     }
 
-    Matrix *inv_matrix = mul_scalar(adj_matrix, 1. / (double)det_matrix);
-    printf("\n//// det_matrix: %lf ////\n", det_matrix);
-    printf("\n//// %lf ////\n", adj_matrix->arr[0]);
+    Matrix *inv_matrix = mul_scalar(adj_matrix, 1 / (double)det_matrix);
     free_matrix(adj_matrix);
     if (inv_matrix == NULL) {
         return NULL;
     }
+
+    printf("\n//// det_matrix: %lf ////\n", det_matrix);
+    printf("\n//// inv_matrix: %zu %zu %lf ////\n", inv_matrix->rows, inv_matrix->cols, inv_matrix->arr[0]);
+    // adj_matrix->arr[0] /= (double) det_matrix;
+
 
     return inv_matrix;
 }
