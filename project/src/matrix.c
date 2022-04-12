@@ -13,7 +13,11 @@ static int read_matrix_from_file(FILE *file, Matrix *matrix) {
     }
 
     size_t len_for_arr = matrix->rows * matrix->cols;
-    matrix->arr = realloc(matrix->arr, len_for_arr * sizeof(double));
+    double* arr_tmp = realloc(matrix->arr, len_for_arr * sizeof(double));
+    if (arr_tmp == NULL) {
+        return ERR_REALLOC;
+    }
+    matrix->arr = arr_tmp;
 
     int flag = 0;
     for (size_t i = 0; i < len_for_arr; ++i) {

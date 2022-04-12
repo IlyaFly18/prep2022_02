@@ -1,5 +1,8 @@
 #include "matrix.h"
 
+#include <stdio.h>
+
+
 Matrix *mul_scalar(const Matrix *matrix, double val) {
     if (matrix == NULL) {
         return NULL;
@@ -28,7 +31,8 @@ Matrix *mul_scalar(const Matrix *matrix, double val) {
             }
         }
     }
-    if (flag != 0) {  // TODO(Ilya): Везде прописать удаление матрицы.
+    if (flag != 0) {
+        free_matrix(new_matrix);
         return NULL;
     }
 
@@ -64,6 +68,7 @@ Matrix *transp(const Matrix *matrix) {
         }
     }
     if (flag != 0) {
+        free_matrix(new_matrix);
         return NULL;
     }
 
@@ -109,6 +114,7 @@ Matrix *sum(const Matrix *l, const Matrix *r) {
         }
     }
     if (flag != 0) {
+        free_matrix(new_matrix);
         return NULL;
     }
 
@@ -154,6 +160,7 @@ Matrix *sub(const Matrix *l, const Matrix *r) {
         }
     }
     if (flag != 0) {
+        free_matrix(new_matrix);
         return NULL;
     }
 
@@ -204,6 +211,7 @@ Matrix *mul(const Matrix *l, const Matrix *r) {
         }
     }
     if (flag != 0) {
+        free_matrix(new_matrix);
         return NULL;
     }
 

@@ -67,32 +67,31 @@ int det(const Matrix *matrix, double *val) {
     int flag = 0;
     double det_res = 0;
     for (size_t i = 0; i < cols; ++i) {
-        // printf("\n//// %lf ////\n", det_res);
         double val_in_matrix = 0;
         if (get_elem(matrix, 0, i, &val_in_matrix) != 0) {
             flag = -1;
         }
-        // printf("\n//// %lf ////\n", val_in_matrix);
+
         Matrix *extra_minor = get_extra_minor(matrix, rows, cols, 0, i);
         if (extra_minor == NULL) {
             flag = -1;
             return flag;
         }
-        // printf("\n//// %zu %zu %lf ////\n", extra_minor->rows, extra_minor->cols, extra_minor->arr[0]);
+
         double det_extra_minor = 0;
         if (det(extra_minor, &det_extra_minor) != 0) {
             flag = -1;
         }
         free_matrix(extra_minor);
-        // printf("\n//// val_in_matrix: %lf   det_extra_minor: %lf ////\n", val_in_matrix, det_extra_minor);
-        det_res += (1 - 2 * (double)(i % 2)) * val_in_matrix * det_extra_minor;
+
+        det_res += (1 - 2 * (double) (i % 2)) * val_in_matrix * det_extra_minor;
     }
     if (flag == -1) {
         return ERR_IN_CYCLE_IN_DET;
     }
 
     *val = det_res;
-    // printf("\n//// %lf ////\n", det_res);
+
     return 0;
 }
 
@@ -118,11 +117,7 @@ Matrix *adj(const Matrix *matrix) {
     }
 
     if (rows == 1) {
-        double val_in_matrix;
-        if (get_elem(matrix, 0, 0, &val_in_matrix) != 0) {
-            return NULL;
-        }
-        if (set_elem(adj_matrix, 0, 0, val_in_matrix) != 0) {
+        if (set_elem(adj_matrix, 0, 0, 1) != 0) {
             return NULL;
         }
         return adj_matrix;
@@ -141,8 +136,7 @@ Matrix *adj(const Matrix *matrix) {
                 flag = -1;
             }
             free_matrix(extra_minor);
-            // printf("\n//// det_extra_minor: %lf ////\n", det_extra_minor);
-            double val_in_adj_matrix = (1 - 2 * (double)((row + col) % 2)) * det_extra_minor;
+            double val_in_adj_matrix = (1 - 2 * (double) ((row + col) % 2)) * det_extra_minor;
             if (set_elem(adj_matrix, col, row, val_in_adj_matrix) != 0) {
                 flag = -1;
             }
@@ -171,16 +165,11 @@ Matrix *inv(const Matrix *matrix) {
         return NULL;
     }
 
-    Matrix *inv_matrix = mul_scalar(adj_matrix, 1 / (double)det_matrix);
+    Matrix *inv_matrix = mul_scalar(adj_matrix, 1 / det_matrix);
     free_matrix(adj_matrix);
     if (inv_matrix == NULL) {
         return NULL;
     }
-
-    printf("\n//// det_matrix: %lf ////\n", det_matrix);
-    printf("\n//// inv_matrix: %zu %zu %lf ////\n", inv_matrix->rows, inv_matrix->cols, inv_matrix->arr[0]);
-    // adj_matrix->arr[0] /= (double) det_matrix;
-
 
     return inv_matrix;
 }

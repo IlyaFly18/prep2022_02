@@ -11,6 +11,7 @@ enum ERRORS {
     ERR_ROWS_AND_COLS_NOT_EQUAL = -5,
     ERR_GET_ELEM = -6,
     ERR_IN_CYCLE_IN_DET = -7,
+    ERR_REALLOC = -8,
 };
 
 
