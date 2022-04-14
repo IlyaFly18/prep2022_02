@@ -1,6 +1,10 @@
 #include "matrix.h"
 #include <stdio.h>
 
+static inline double pow_of_minus_one(size_t st) {
+    return (1 - 2 * (double) (st % 2));
+}
+
 static Matrix *get_extra_minor(const Matrix *matrix, size_t rows, size_t cols, size_t row, size_t col) {
     if (matrix == NULL) {
         return NULL;
@@ -18,13 +22,13 @@ static Matrix *get_extra_minor(const Matrix *matrix, size_t rows, size_t cols, s
                 if (extra_minor_col != col) {
                     double val_in_matrix = 0;
                     if (get_elem(matrix, extra_minor_row, extra_minor_col, &val_in_matrix) != 0) {
-                        flag = -1;
+                        flag = ERR_GET_ELEM;
                     }
                     if (set_elem(extra_minor,
                                  extra_minor_row < row ? extra_minor_row : extra_minor_row - 1,
                                  extra_minor_col < col ? extra_minor_col : extra_minor_col - 1,
                                  val_in_matrix) != 0) {
-                        flag = -1;
+                        flag = ERR_SET_ELEM;
                     }
                 }
             }
@@ -44,10 +48,8 @@ int det(const Matrix *matrix, double *val) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
 
-    size_t rows = 0;
-    size_t cols = 0;
-    if (get_rows(matrix, &rows) != 0 ||
-        get_cols(matrix, &cols) != 0) {
+    size_t rows = 0, cols = 0;
+    if (get_rows_and_cols(matrix, &rows, &cols) != 0) {
         return ERR_GET_ROWS_OR_COLS;
     }
 
@@ -55,7 +57,7 @@ int det(const Matrix *matrix, double *val) {
         return ERR_ROWS_AND_COLS_NOT_EQUAL;
     }
 
-    if (rows == cols && rows == 1) {
+    if (rows == 1) {
         double el = 0;
         if (get_elem(matrix, 0, 0, &el) != 0) {
             return ERR_GET_ELEM;
@@ -69,22 +71,22 @@ int det(const Matrix *matrix, double *val) {
     for (size_t i = 0; i < cols; ++i) {
         double val_in_matrix = 0;
         if (get_elem(matrix, 0, i, &val_in_matrix) != 0) {
-            flag = -1;
+            flag = ERR_GET_ELEM;
         }
 
         Matrix *extra_minor = get_extra_minor(matrix, rows, cols, 0, i);
         if (extra_minor == NULL) {
-            flag = -1;
+            flag = NULL_EXTRA_MINOR;
             return flag;
         }
 
         double det_extra_minor = 0;
         if (det(extra_minor, &det_extra_minor) != 0) {
-            flag = -1;
+            flag = ERR_DET;
         }
         free_matrix(extra_minor);
 
-        det_res += (1 - 2 * (double) (i % 2)) * val_in_matrix * det_extra_minor;
+        det_res += pow_of_minus_one(i) * val_in_matrix * det_extra_minor;
     }
     if (flag == -1) {
         return ERR_IN_CYCLE_IN_DET;
@@ -100,10 +102,8 @@ Matrix *adj(const Matrix *matrix) {
         return NULL;
     }
 
-    size_t rows = 0;
-    size_t cols = 0;
-    if (get_rows(matrix, &rows) != 0 ||
-        get_cols(matrix, &cols) != 0) {
+    size_t rows = 0, cols = 0;
+    if (get_rows_and_cols(matrix, &rows, &cols) != 0) {
         return NULL;
     }
 
@@ -128,17 +128,18 @@ Matrix *adj(const Matrix *matrix) {
         for (size_t col = 0; col < cols; ++col) {
             Matrix *extra_minor = get_extra_minor(matrix, rows, cols, row, col);
             if (extra_minor == NULL) {
-                flag = -1;
+                flag = NULL_EXTRA_MINOR;
             }
 
             double det_extra_minor = 0;
             if (det(extra_minor, &det_extra_minor) != 0) {
-                flag = -1;
+                flag = ERR_DET;
             }
             free_matrix(extra_minor);
-            double val_in_adj_matrix = (1 - 2 * (double) ((row + col) % 2)) * det_extra_minor;
+
+            double val_in_adj_matrix = pow_of_minus_one(row + col) * det_extra_minor;
             if (set_elem(adj_matrix, col, row, val_in_adj_matrix) != 0) {
-                flag = -1;
+                flag = ERR_SET_ELEM;
             }
         }
     }

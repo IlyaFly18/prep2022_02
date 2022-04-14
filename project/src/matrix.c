@@ -28,6 +28,7 @@ static int read_matrix_from_file(FILE *file, Matrix *matrix) {
     if (flag != 0) {
         return BAD_READ_FROM_FILE;
     }
+
     return 0;
 }
 
@@ -54,6 +55,7 @@ Matrix *create_matrix_from_file(const char *path_file) {
     }
 
     fclose(file);
+
     return matrix;
 }
 
@@ -71,6 +73,7 @@ Matrix *create_matrix(size_t rows, size_t cols) {
 
     matrix->rows = rows;
     matrix->cols = cols;
+
     return matrix;
 }
 
@@ -78,9 +81,11 @@ void free_matrix(Matrix *matrix) {
     if (matrix == NULL) {
         return;
     }
+
     if (matrix->arr != NULL) {
         free(matrix->arr);
     }
+
     free(matrix);
 }
 
