@@ -1,4 +1,4 @@
-#include "test_print_to_file.h"
+#include "test_utils.h"
 
 #define WRONG_TESTS (-1)
 

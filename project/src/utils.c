@@ -1,5 +1,5 @@
 #include "utils.h"
-
+#include "read_and_print_data.h"
 
 enum ERROR_RETURN_CODES {
     ERR_PRINT_TO_FILE_USING_FUNC = -1,
@@ -8,21 +8,25 @@ enum ERROR_RETURN_CODES {
     ERR_PRINT_CLIENT_OBJ_TEMPLATE_FOR_INPUT = -4,
     ERR_PRINT_CLIENT_OBJ = -5,
     NULL_DESCRIPTOR_OF_FILE = -6,
+    NULL_PTR_ON_FUNC = -7,
 };
 
-static int print_to_file_using_func(FILE *file,
-                                    int (*read_obj)(FILE *, client *),
-                                    int (*print_client_obj)(FILE *, client *),
-                                    int (*print_client_obj_template_for_input)(FILE *)) {
+static int print_client_obj_to_file(FILE *file,
+                             int (*read_client_obj)(FILE *, client *),
+                             int (*print_client_obj)(FILE *, client *),
+                             int (*print_client_obj_template_for_input)(FILE *)) {
     if (file == NULL) {
         return NULL_DESCRIPTOR_OF_FILE;
+    }
+    if (read_client_obj == NULL || print_client_obj == NULL || print_client_obj_template_for_input == NULL) {
+        return NULL_PTR_ON_FUNC;
     }
 
     client client_obj = {0};  // client or transaction
     if (print_client_obj_template_for_input(stdout) != 0) {
         return ERR_PRINT_CLIENT_OBJ_TEMPLATE_FOR_INPUT;
     }
-    while (read_obj(stdin, &client_obj) == 0) {
+    while (read_client_obj(stdin, &client_obj) == 0) {
         if (print_client_obj(file, &client_obj) != 0) {
             return ERR_PRINT_CLIENT_OBJ;
         }
@@ -35,8 +39,12 @@ static int print_to_file_using_func(FILE *file,
 }
 
 int print_clients_to_file(FILE *clients_file) {
-    if (print_to_file_using_func(clients_file, read_person,
-                                 print_person, print_person_template_for_input) != 0) {
+    if (clients_file == NULL) {
+        return NULL_DESCRIPTOR_OF_FILE;
+    }
+
+    if (print_client_obj_to_file(clients_file, read_person,
+                          print_person, print_person_template_for_input) != 0) {
         return ERR_PRINT_CLIENTS_TO_FILE;
     }
 
@@ -44,8 +52,12 @@ int print_clients_to_file(FILE *clients_file) {
 }
 
 int print_transactions_to_file(FILE *transactions_file) {
-    if (print_to_file_using_func(transactions_file, read_transaction,
-                                 print_transaction, print_transaction_template_for_input) != 0) {
+    if (transactions_file == NULL) {
+        return NULL_DESCRIPTOR_OF_FILE;
+    }
+
+    if (print_client_obj_to_file(transactions_file, read_transaction,
+                          print_transaction, print_transaction_template_for_input) != 0) {
         return ERR_PRINT_TRANSACTIONS_TO_FILE;
     }
 

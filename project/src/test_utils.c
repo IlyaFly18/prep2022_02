@@ -1,9 +1,14 @@
 #include "client.h"
-#include "utils.h"
 #include "read_and_print_data.h"
-#include "test_print_to_file.h"
+#include "test_utils.h"
+#include "utils.h"
 
 #include <string.h>
+
+const char *CLIENTS_FILE = "record.dat",
+        *TRANSACTIONS_FILE = "transaction.dat",
+        *UPDATED_CLIENTS_FILE = "blackrecord.dat",
+        *TEST_READ_AND_PRINT_DATA_FILE = "test_read_and_print_data.dat";
 
 enum ERROR_RETURN_CODES {
     ERR_READ_DATA = -1,
@@ -14,6 +19,7 @@ enum ERROR_RETURN_CODES {
     NULL_PTR_IN_ARGS_OF_FUNC = -6,
     ERR_UPDATE_DATA = -7,
     WRONG_COMPARISON_UPDATED_PERSONS = -8,
+    NULL_DESCRIPTOR_OF_FILE = -9,
 };
 
 static int compare_persons(client *person1, client *person2) {
@@ -56,7 +62,10 @@ static int test_print_data_to_file(client *data_expected,
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
 
-    FILE *file = fopen("test_read_and_print_data.dat", "w+");
+    FILE *file = fopen(TEST_READ_AND_PRINT_DATA_FILE, "w+");
+    if (file == NULL) {
+        return NULL_DESCRIPTOR_OF_FILE;
+    }
 
     if (print_data(file, data_expected) != 0) {
         fclose(file);
@@ -100,7 +109,7 @@ int test_print_person() {
 
 int test_print_transaction() {
     client transaction_expected = {.number = 10,
-                                   .cash_payments = 4000};
+            .cash_payments = 4000};
 
     test_print_data_to_file(&transaction_expected,
                             print_transaction,
@@ -126,29 +135,38 @@ int test_update_clients() {
     client update_person_expected = person;
     update_person_expected.credit_limit = person.credit_limit + transaction.cash_payments;
 
-    FILE* clients_file = fopen("record.dat", "w+");
+    FILE *clients_file = fopen(CLIENTS_FILE, "w+");
+    if (clients_file == NULL) {
+        return NULL_DESCRIPTOR_OF_FILE;
+    }
+
     if (print_person(clients_file, &person) != 0) {
         fclose(clients_file);
         return ERR_PRINT_DATA;
     }
-    FILE* transactions_file = fopen("transaction.dat", "w+");
+
+    FILE *transactions_file = fopen(TRANSACTIONS_FILE, "w+");
+    if (transactions_file == NULL) {
+        return NULL_DESCRIPTOR_OF_FILE;
+    }
+
     if (print_transaction(transactions_file, &transaction) != 0) {
         fclose(clients_file);
         fclose(transactions_file);
         return ERR_PRINT_DATA;
     }
+
     rewind(clients_file);
     rewind(transactions_file);
-
-    FILE* clients_after_transactions = fopen("blackrecord.dat", "w+");
+    FILE *clients_after_transactions = fopen(UPDATED_CLIENTS_FILE, "w+");
     if (update_clients(clients_file, transactions_file, clients_after_transactions) != 0) {
         fclose(clients_file);
         fclose(transactions_file);
         fclose(clients_after_transactions);
         return ERR_UPDATE_DATA;
     }
-    rewind(clients_after_transactions);
 
+    rewind(clients_after_transactions);
     client update_person_got = {0};
     if (read_person(clients_after_transactions, &update_person_got) != 0) {
         fclose(clients_file);
