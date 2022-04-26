@@ -53,4 +53,10 @@ class SingularMatrix: public MatrixException {
   SingularMatrix()
       : MatrixException("Singular matrix") {}
 };
+
+class NullPtrInFuncArgs: public MatrixException {
+ public:
+    NullPtrInFuncArgs()
+            : MatrixException("Null pointer in args of function") {}
+};
 }  // namespace prep
