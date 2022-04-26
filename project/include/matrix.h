@@ -46,7 +46,7 @@ class Matrix {
 
 double add_double(double l, double r);
 double sub_double(double l, double r);
-double minus_one_pow(size_t exp);
+double minus_one_pow(size_t deg);
 
 Matrix operator*(double val, const Matrix& matrix);
 
