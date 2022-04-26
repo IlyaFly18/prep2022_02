@@ -35,7 +35,7 @@ bool Matrix::operator==(const Matrix& rhs) const {
     }
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
-            if (fabs((*this)(i, j) - rhs(i, j)) >= EPS) {
+            if (fabs((*this)(i, j) - rhs(i, j)) >= std::numeric_limits<double>::epsilon()) {
                 return false;
             }
         }
@@ -48,9 +48,11 @@ bool Matrix::operator!=(const Matrix& rhs) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
+    os << matrix.rows << " " << matrix.cols << std::endl;
+
     for (size_t i = 0; i < matrix.rows; ++i) {
         for (size_t j = 0; j < matrix.cols; ++j) {
-            os << std::fixed << std::setprecision(std::numeric_limits<double>::max_digits10);
+            os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix(i, j) << " ";
         }
         os << std::endl;
     }

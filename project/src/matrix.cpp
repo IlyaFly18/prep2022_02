@@ -1,8 +1,6 @@
 #include "matrix.h"
 #include "exceptions.h"
 
-#include <iostream>
-
 namespace prep {
 Matrix::Matrix(size_t rows, size_t cols) {
     this->rows = rows;
@@ -33,14 +31,15 @@ Matrix& Matrix::operator=(const Matrix& rhs) {
 }
 
 Matrix::Matrix(std::istream& is) {
-    this->rows = 0;
-    this->cols = 0;
-    this->arr = new double[rows * cols];
-    if (!(is >> this->rows >> this->cols)) {
+    rows = 0;
+    cols = 0;
+    if (!(is >> rows >> cols)) {
         throw InvalidMatrixStream();
     }
+    arr = new double[rows * cols];
     for (size_t i = 0; i < rows * cols; ++i) {
-        if (!(is >> this->arr[i])) {
+        if (!(is >> arr[i])) {
+            delete[] arr;
             throw InvalidMatrixStream();
         }
     }

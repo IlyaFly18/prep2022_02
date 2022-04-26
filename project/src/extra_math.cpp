@@ -1,12 +1,15 @@
 #include "matrix.h"
 #include "exceptions.h"
 
-#include <cmath>
-
+#include <limits>
+#include <iostream>
 
 namespace prep {
-double minus_one_pow(size_t exp) {
-    return 1 - 2 * (double)(exp % 2);
+double minus_one_pow(size_t deg) {
+    if (deg % 2 == 0) {
+        return 1.0;
+    }
+    return -1.0;
 }
 
 
@@ -14,7 +17,6 @@ double Matrix::det_without_used_cells(bool* used_rows, bool* used_cols) const {
     if (!used_rows || !used_cols) {
         throw NullPtrInFuncArgs();
     }
-
     if (rows != cols) {
         throw DimensionMismatch(*this);
     }
@@ -27,9 +29,11 @@ double Matrix::det_without_used_cells(bool* used_rows, bool* used_cols) const {
     }
     if (cnt_used_rows == rows - 1) {
         for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                if (!used_rows[i] && !used_cols[j]) {
-                    return (*this)(i, j);
+            if (!used_rows[i]) {
+                for (size_t j = 0; j < cols; ++j) {
+                    if (!used_cols[j]) {
+                        return (*this)(i, j);
+                    }
                 }
             }
         }
@@ -41,20 +45,21 @@ double Matrix::det_without_used_cells(bool* used_rows, bool* used_cols) const {
     }
     used_rows[i] = true;
 
-    double det_ans = 0.0;
+    double det_res = 0.0;
     for (size_t j = 0, j_in_submatrix = 0; j < cols; ++j) {
         if (!used_cols[j]) {
             used_cols[j] = true;
 
-            double det_res = (*this).det_without_used_cells(used_rows, used_cols);
-            det_ans += minus_one_pow(j_in_submatrix) * (*this)(i, j) * det_res;
+            double submatrix_det = (*this).det_without_used_cells(used_rows, used_cols);
+            det_res += minus_one_pow(j_in_submatrix) * (*this)(i, j) * submatrix_det;
 
             used_cols[j] = false;
             j_in_submatrix++;
         }
     }
 
-    return det_ans;
+    used_rows[i] = false;
+    return det_res;
 }
 
 double Matrix::det() const {
@@ -62,8 +67,9 @@ double Matrix::det() const {
         throw DimensionMismatch(*this);
     }
 
-    bool* used_rows = new bool[rows];
-    bool* used_cols = new bool[cols];
+    bool* used_rows = new bool[rows]{false};
+    bool* used_cols = new bool[cols]{false};
+
     double det_ans = det_without_used_cells(used_rows, used_cols);
 
     delete[] used_rows;
@@ -76,22 +82,21 @@ Matrix Matrix::adj() const {
         throw DimensionMismatch(*this);
     }
 
-    Matrix res = Matrix(rows, cols);
+    Matrix res(rows, cols);
     if (rows == 1) {
         res(0, 0) = 1;
         return res;
     }
 
-    bool* used_rows = new bool[rows];
-    bool* used_cols = new bool[cols];
+    bool* used_rows = new bool[rows]{false};
+    bool* used_cols = new bool[cols]{false};
 
     for (size_t i = 0; i < rows; ++i) {
         used_rows[i] = true;
         for (size_t j = 0; j < cols; ++j) {
             used_cols[j] = true;
 
-            double det_dop = det_without_used_cells(used_rows, used_cols);
-            res(i, j) = minus_one_pow(i + j) * det_dop;
+            res(j, i) = minus_one_pow(i + j) * det_without_used_cells(used_rows, used_cols);
 
             used_cols[j] = false;
         }
@@ -108,9 +113,10 @@ Matrix Matrix::inv() const {
         throw DimensionMismatch(*this);
     }
 
-    Matrix adj_matrix = this->adj();
+    Matrix adj_matrix(adj());
     double det = this->det();
-    if (det < EPS) {
+    if (det == 0) {
+        // std::cout << std::endl << "//// ERROR ////" << std::endl;
         throw SingularMatrix();
     }
 
