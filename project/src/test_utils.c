@@ -5,10 +5,7 @@
 
 #include <string.h>
 
-const char *CLIENTS_FILE = "record.dat",
-        *TRANSACTIONS_FILE = "transaction.dat",
-        *UPDATED_CLIENTS_FILE = "blackrecord.dat",
-        *TEST_READ_AND_PRINT_DATA_FILE = "test_read_and_print_data.dat";
+const char* TEST_READ_AND_PRINT_DATA_FILE = "test_read_and_print_data.dat";
 
 enum ERROR_RETURN_CODES {
     ERR_READ_DATA = -1,
@@ -22,7 +19,7 @@ enum ERROR_RETURN_CODES {
     NULL_DESCRIPTOR_OF_FILE = -9,
 };
 
-static int compare_persons(client *person1, client *person2) {
+static int compare_persons(client* person1, client* person2) {
     if (person1 == NULL || person2 == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
@@ -41,7 +38,7 @@ static int compare_persons(client *person1, client *person2) {
     return 0;
 }
 
-static int compare_transactions(client *transaction1, client *transaction2) {
+static int compare_transactions(client* transaction1, client* transaction2) {
     if (transaction1 == NULL || transaction2 == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
@@ -54,15 +51,15 @@ static int compare_transactions(client *transaction1, client *transaction2) {
     return 0;
 }
 
-static int test_print_data_to_file(client *data_expected,
-                                   int (*print_data)(FILE *, client *),
-                                   int (*read_data)(FILE *, client *),
-                                   int (*compare_got_and_expected_data)(client *, client *)) {
+static int test_print_data_to_file(client* data_expected,
+                                   int (* print_data)(FILE*, client*),
+                                   int (* read_data)(FILE*, client*),
+                                   int (* compare_got_and_expected_data)(client*, client*)) {
     if (data_expected == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
 
-    FILE *file = fopen(TEST_READ_AND_PRINT_DATA_FILE, "w+");
+    FILE* file = fopen(TEST_READ_AND_PRINT_DATA_FILE, "w+");
     if (file == NULL) {
         return NULL_DESCRIPTOR_OF_FILE;
     }
@@ -135,7 +132,7 @@ int test_update_clients() {
     client update_person_expected = person;
     update_person_expected.credit_limit = person.credit_limit + transaction.cash_payments;
 
-    FILE *clients_file = fopen(CLIENTS_FILE, "w+");
+    FILE* clients_file = fopen(CLIENTS_FILE, "w+");
     if (clients_file == NULL) {
         return NULL_DESCRIPTOR_OF_FILE;
     }
@@ -145,7 +142,7 @@ int test_update_clients() {
         return ERR_PRINT_DATA;
     }
 
-    FILE *transactions_file = fopen(TRANSACTIONS_FILE, "w+");
+    FILE* transactions_file = fopen(TRANSACTIONS_FILE, "w+");
     if (transactions_file == NULL) {
         return NULL_DESCRIPTOR_OF_FILE;
     }
@@ -158,7 +155,7 @@ int test_update_clients() {
 
     rewind(clients_file);
     rewind(transactions_file);
-    FILE *clients_after_transactions = fopen(UPDATED_CLIENTS_FILE, "w+");
+    FILE* clients_after_transactions = fopen(UPDATED_CLIENTS_FILE, "w+");
     if (update_clients(clients_file, transactions_file, clients_after_transactions) != 0) {
         fclose(clients_file);
         fclose(transactions_file);

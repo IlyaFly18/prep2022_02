@@ -1,7 +1,9 @@
 #include "client.h"
 #include "read_and_print_data.h"
 
-const char *TEMPLATE_FOR_INPUT_CLIENT_PERSON =
+#include <stdio.h>
+
+const char* TEMPLATE_FOR_INPUT_CLIENT_PERSON =
         "1 Number account:\n"
         "2 Client name:\n"
         "3 Surname:\n"
@@ -11,7 +13,7 @@ const char *TEMPLATE_FOR_INPUT_CLIENT_PERSON =
         "7 Client credit limit:\n"
         "8 Client cash payments:\n\n";
 
-const char *TEMPLATE_FOR_INPUT_CLIENT_TRANSACTION =
+const char* TEMPLATE_FOR_INPUT_CLIENT_TRANSACTION =
         "1 Number account:\n "
         "2 Client cash payments:\n";
 
@@ -43,7 +45,7 @@ enum BUF_FOR_TRANSACTION_FIELDS {
     BUF_FOR_PRINT_TRANSACTION_CASH_PAYMENTS_AFTER_POINT = 2,
 };
 
-int read_person(FILE *output_file, client *person) {
+int read_person(FILE* output_file, client* person) {
     if (output_file == NULL || person == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
@@ -65,7 +67,7 @@ int read_person(FILE *output_file, client *person) {
     return 0;
 }
 
-int read_transaction(FILE *output_file, client *transaction) {
+int read_transaction(FILE* output_file, client* transaction) {
     if (output_file == NULL || transaction == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
@@ -80,7 +82,7 @@ int read_transaction(FILE *output_file, client *transaction) {
     return 0;
 }
 
-static int generate_format_string_for_print_person(char *str, client *person) {
+static int generate_format_string_for_print_person(char* str, client* person) {
     int cnt_of_printed_symbols =
             snprintf(str, TOTAL_BUF_SIZE,
                      "%-*d%-*s%-*s%-*s%*s%*.*lf%*.*lf%*.*lf\n",
@@ -99,7 +101,7 @@ static int generate_format_string_for_print_person(char *str, client *person) {
     return cnt_of_printed_symbols;
 }
 
-static int generate_format_string_for_print_transaction(char *str, client *transaction) {
+static int generate_format_string_for_print_transaction(char* str, client* transaction) {
     int cnt_of_printed_symbols =
             snprintf(str, TOTAL_BUF_SIZE - 1,
                      "%-*d%-*.*f\n",
@@ -110,12 +112,12 @@ static int generate_format_string_for_print_transaction(char *str, client *trans
     return cnt_of_printed_symbols;
 }
 
-int print_person(FILE *output_file, client *person) {
+int print_person(FILE* output_file, client* person) {
     if (output_file == NULL || person == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
 
-    char format_str[TOTAL_BUF_SIZE];
+    char format_str[TOTAL_BUF_SIZE] = {0};
     if (fprintf(output_file, "%-*s",
                 generate_format_string_for_print_person(format_str, person),
                 format_str) == EOF) {
@@ -125,12 +127,12 @@ int print_person(FILE *output_file, client *person) {
     return 0;
 }
 
-int print_transaction(FILE *output_file, client *transaction) {
+int print_transaction(FILE* output_file, client* transaction) {
     if (output_file == NULL || transaction == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
 
-    char format_str[TOTAL_BUF_SIZE];
+    char format_str[TOTAL_BUF_SIZE] = {0};
     if (fprintf(output_file, "%-*s",
                 generate_format_string_for_print_transaction(format_str, transaction),
                 format_str) == EOF) {
@@ -140,7 +142,7 @@ int print_transaction(FILE *output_file, client *transaction) {
     return 0;
 }
 
-int print_person_template_for_input(FILE *output_file) {
+int print_person_template_for_input(FILE* output_file) {
     if (output_file == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
@@ -150,7 +152,7 @@ int print_person_template_for_input(FILE *output_file) {
     return 0;
 }
 
-int print_transaction_template_for_input(FILE *output_file) {
+int print_transaction_template_for_input(FILE* output_file) {
     if (output_file == NULL) {
         return NULL_PTR_IN_ARGS_OF_FUNC;
     }
