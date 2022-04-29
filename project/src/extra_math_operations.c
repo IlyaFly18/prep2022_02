@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-static double pow_of_minus_one(size_t exp) {
-    return (1 - 2 * (double) (exp % 2));
+static double pow_of_minus_one(size_t deg) {
+    return (1 - 2 * (double) (deg % 2));
 }
 
 static int det_with_excluded_rows_and_cols(const Matrix *matrix,

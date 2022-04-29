@@ -72,17 +72,17 @@ Matrix *transp(const Matrix *matrix) {
     return res_matrix;
 }
 
-static inline double sum_double(double a, double b) {
+static double sum_double(double a, double b) {
     return a + b;
 }
 
-static inline double sub_double(double a, double b) {
+static double sub_double(double a, double b) {
     return a - b;
 }
 
-static Matrix *sum_or_sub_matrix(const Matrix *l, const Matrix *r,
-                                 double (*sum_or_sub_double_func)(double, double)) {
-    if (!l || !r) {
+static Matrix *operate_with_symm_cells_of_matrices(const Matrix *l, const Matrix *r,
+                                                   double (*operation)(double, double)) {
+    if (!l || !r || !operation) {
         return NULL;
     }
 
@@ -118,7 +118,7 @@ static Matrix *sum_or_sub_matrix(const Matrix *l, const Matrix *r,
             }
 
             if (set_elem(res_matrix, i, j,
-                         sum_or_sub_double_func(val_in_matrix_l, val_in_matrix_r)) != 0) {
+                         operation(val_in_matrix_l, val_in_matrix_r)) != 0) {
                 free_matrix(res_matrix);
                 return NULL;
             }
@@ -129,7 +129,7 @@ static Matrix *sum_or_sub_matrix(const Matrix *l, const Matrix *r,
 }
 
 Matrix *sum(const Matrix *l, const Matrix *r) {
-    Matrix *res_matrix = sum_or_sub_matrix(l, r, sum_double);
+    Matrix *res_matrix = operate_with_symm_cells_of_matrices(l, r, sum_double);
     if (!res_matrix) {
         return NULL;
     }
@@ -138,7 +138,7 @@ Matrix *sum(const Matrix *l, const Matrix *r) {
 }
 
 Matrix *sub(const Matrix *l, const Matrix *r) {
-    Matrix *res_matrix = sum_or_sub_matrix(l, r, sub_double);
+    Matrix *res_matrix = operate_with_symm_cells_of_matrices(l, r, sub_double);
     if (!res_matrix) {
         return NULL;
     }
