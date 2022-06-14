@@ -1,12 +1,12 @@
 #include "matrix.h"
 #include "exceptions.h"
 
-using namespace std;
+
 
 namespace prep {
 
 Matrix Matrix::add_or_sub_matrix(const Matrix& rhs,
-                                 function<double(double, double)>(func)) const {
+                                 std::function<double(double, double)>(func)) const {
     if (!func) {
         throw NullPtrInFuncArgs();
     }
@@ -25,14 +25,14 @@ Matrix Matrix::add_or_sub_matrix(const Matrix& rhs,
 }
 
 Matrix Matrix::operator+(const Matrix& rhs) const {
-    function<double(double, double)> add = [](double l, double r){return l + r;};
+    std::function<double(double, double)> add = [](double l, double r){return l + r;};
     Matrix res = add_or_sub_matrix(rhs, add);
 
     return res;
 }
 
 Matrix Matrix::operator-(const Matrix& rhs) const {
-    function<double(double, double)> sub = [](double l, double r){return l - r;};
+    std::function<double(double, double)> sub = [](double l, double r){return l - r;};
     Matrix res = add_or_sub_matrix(rhs, sub);
 
     return res;

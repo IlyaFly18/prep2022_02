@@ -6,7 +6,7 @@
 
 
 namespace prep {
-const double EPS = 1e-07;
+static constexpr double EPS = 1e-07;
 
 class Matrix {
  private:

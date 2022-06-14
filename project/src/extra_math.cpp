@@ -1,13 +1,10 @@
 #include "matrix.h"
 #include "exceptions.h"
 
-#include <limits>
-#include <iostream>
 #include <vector>
 
-using namespace std;
-
 namespace prep {
+
 double minus_one_pow(size_t deg) {
     if (deg % 2 == 0) {
         return 1.0;
@@ -15,8 +12,7 @@ double minus_one_pow(size_t deg) {
     return -1.0;
 }
 
-
-double Matrix::det_without_used_cells(vector<bool> used_rows, vector<bool> used_cols) const {
+double Matrix::det_without_used_cells(std::vector<bool> used_rows, std::vector<bool> used_cols) const {
     if (rows != cols) {
         throw DimensionMismatch(*this);
     }
@@ -67,8 +63,8 @@ double Matrix::det() const {
         throw DimensionMismatch(*this);
     }
 
-    vector<bool> used_rows(rows, false);
-    vector<bool> used_cols(cols, false);
+    std::vector<bool> used_rows(rows, false);
+    std::vector<bool> used_cols(cols, false);
 
     double det_ans = det_without_used_cells(used_rows, used_cols);
 
@@ -86,8 +82,8 @@ Matrix Matrix::adj() const {
         return res;
     }
 
-    vector<bool> used_rows(rows, false);
-    vector<bool> used_cols(cols, false);
+    std::vector<bool> used_rows(rows, false);
+    std::vector<bool> used_cols(cols, false);
 
     for (size_t i = 0; i < rows; ++i) {
         used_rows[i] = true;
@@ -112,7 +108,6 @@ Matrix Matrix::inv() const {
     Matrix adj_matrix(adj());
     double det = this->det();
     if (det == 0) {
-        // std::cout << std::endl << "//// ERROR ////" << std::endl;
         throw SingularMatrix();
     }
 

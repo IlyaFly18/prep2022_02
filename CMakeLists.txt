@@ -4,7 +4,7 @@ PROJECT(matrix)
 OPTION(WITH_MEMCHECK "Run with memcheck" OFF)
 
 SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Werror")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
 ENABLE_TESTING()
 

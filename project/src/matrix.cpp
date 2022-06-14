@@ -11,8 +11,7 @@ Matrix::Matrix(const Matrix& rhs): rows(rhs.rows), cols(rhs.cols), arr(new doubl
     }
 }
 
-void swap(Matrix& l, Matrix& r)
-{
+void swap(Matrix& l, Matrix& r) {
     using std::swap;
 
     swap(l.rows, r.rows);
