@@ -1,32 +1,29 @@
 #include "matrix.h"
 #include "exceptions.h"
+#include <algorithm>
 
 namespace prep {
-Matrix::Matrix(size_t rows, size_t cols) {
-    this->rows = rows;
-    this->cols = cols;
-    this->arr = new double[rows * cols];
-}
+Matrix::Matrix(size_t rows, size_t cols): rows(rows), cols(cols), arr(new double[rows * cols]) {}
 
-Matrix::Matrix(const Matrix& rhs) {
-    rows = rhs.rows;
-    cols = rhs.cols;
-    arr = new double[rows * cols];
+Matrix::Matrix(const Matrix& rhs): rows(rhs.rows), cols(rhs.cols), arr(new double[rows * cols]) {
     for (size_t i = 0; i < rows * cols; ++i) {
         arr[i] = rhs.arr[i];
     }
 }
 
+void swap(Matrix& l, Matrix& r)
+{
+    using std::swap;
+
+    swap(l.rows, r.rows);
+    swap(l.cols, r.cols);
+    swap(l.arr, r.arr);
+}
+
 Matrix& Matrix::operator=(const Matrix& rhs) {
-    if (&rhs != this) {
-        rows = rhs.rows;
-        cols = rhs.cols;
-        delete[] arr;
-        arr = new double[rows * cols];
-        for (size_t i = 0; i < rows * cols; ++i) {
-            arr[i] = rhs.arr[i];
-        }
-    }
+    Matrix tmp(rhs);
+
+    prep::swap(*this, tmp);
     return *this;
 }
 

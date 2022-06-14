@@ -1,6 +1,9 @@
 #pragma once // NOLINT
 
 #include <istream>
+#include <functional>
+#include <vector>
+
 
 namespace prep {
 const double EPS = 1e-07;
@@ -12,8 +15,8 @@ class Matrix {
     double* arr;
 
     Matrix add_or_sub_matrix(const Matrix& rhs,
-                             double(*func)(double, double)) const;
-    double det_without_used_cells(bool* used_rows, bool* used_cols) const;
+                             std::function<double(double, double)>(func)) const;
+    double det_without_used_cells(std::vector<bool> used_rows, std::vector<bool> used_cols) const;
 
  public:
     explicit Matrix(size_t rows = 0, size_t cols = 0);
@@ -37,6 +40,7 @@ class Matrix {
 
     friend Matrix operator*(double val, const Matrix& matrix);
     friend std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
+    friend void swap(Matrix& l, Matrix& r);
 
     Matrix transp() const;
     double det() const;
@@ -44,9 +48,8 @@ class Matrix {
     Matrix inv() const;
 };
 
-double add_double(double l, double r);
-double sub_double(double l, double r);
 double minus_one_pow(size_t deg);
+
 
 Matrix operator*(double val, const Matrix& matrix);
 

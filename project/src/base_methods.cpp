@@ -16,10 +16,7 @@ size_t Matrix::getCols() const {
 }
 
 double Matrix::operator()(size_t i, size_t j) const {
-    if (i >= rows || j >= cols) {
-        throw OutOfRange(i, j, *this);
-    }
-    return arr[i * cols + j];
+    return const_cast<Matrix&>(*this)(i, j);
 }
 
 double& Matrix::operator()(size_t i, size_t j) {

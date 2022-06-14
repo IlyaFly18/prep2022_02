@@ -3,6 +3,9 @@
 
 #include <limits>
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 namespace prep {
 double minus_one_pow(size_t deg) {
@@ -13,10 +16,7 @@ double minus_one_pow(size_t deg) {
 }
 
 
-double Matrix::det_without_used_cells(bool* used_rows, bool* used_cols) const {
-    if (!used_rows || !used_cols) {
-        throw NullPtrInFuncArgs();
-    }
+double Matrix::det_without_used_cells(vector<bool> used_rows, vector<bool> used_cols) const {
     if (rows != cols) {
         throw DimensionMismatch(*this);
     }
@@ -67,13 +67,11 @@ double Matrix::det() const {
         throw DimensionMismatch(*this);
     }
 
-    bool* used_rows = new bool[rows]{false};
-    bool* used_cols = new bool[cols]{false};
+    vector<bool> used_rows(rows, false);
+    vector<bool> used_cols(cols, false);
 
     double det_ans = det_without_used_cells(used_rows, used_cols);
 
-    delete[] used_rows;
-    delete[] used_cols;
     return det_ans;
 }
 
@@ -88,8 +86,8 @@ Matrix Matrix::adj() const {
         return res;
     }
 
-    bool* used_rows = new bool[rows]{false};
-    bool* used_cols = new bool[cols]{false};
+    vector<bool> used_rows(rows, false);
+    vector<bool> used_cols(cols, false);
 
     for (size_t i = 0; i < rows; ++i) {
         used_rows[i] = true;
@@ -103,8 +101,6 @@ Matrix Matrix::adj() const {
         used_rows[i] = false;
     }
 
-    delete[] used_rows;
-    delete[] used_cols;
     return res;
 }
 
